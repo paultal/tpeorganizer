@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0f1117">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TPE">
+  <title>TPE organizer</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-text">
+        <h1>TPE organizer</h1>
+      </div>
+    </header>
+
+    <section class="quick-add" aria-label="Quick add task">
+      <div class="quick-add-row">
+        <input
+          type="text"
+          id="quick-add-input"
+          class="quick-add-input"
+          placeholder="What needs doing?"
+          autocomplete="off"
+          enterkeyhint="go"
+          inputmode="text"
+        >
+        <button type="button" class="btn btn-add" id="quick-add-btn">Add</button>
+      </div>
+      <div class="quick-add-controls">
+        <span class="quick-add-label">Place in</span>
+        <div class="quadrant-chips" role="group" aria-label="Choose quadrant">
+          <button type="button" class="quadrant-chip chip-do active" data-quadrant="do">
+            <strong>Do first</strong>
+            <small>Urgent &amp; important</small>
+          </button>
+          <button type="button" class="quadrant-chip chip-schedule" data-quadrant="schedule">
+            <strong>Schedule</strong>
+            <small>Not urgent &amp; important</small>
+          </button>
+          <button type="button" class="quadrant-chip chip-delegate" data-quadrant="delegate">
+            <strong>Delegate</strong>
+            <small>Urgent &amp; not important</small>
+          </button>
+          <button type="button" class="quadrant-chip chip-eliminate" data-quadrant="eliminate">
+            <strong>Eliminate</strong>
+            <small>Not urgent &amp; not important</small>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <div class="matrix-wrapper">
+      <div class="axis-label axis-label-y axis-label-y-top">Important</div>
+      <div class="axis-label axis-label-y axis-label-y-bottom">Not important</div>
+      <div class="axis-label axis-label-x axis-label-x-left">Urgent</div>
+      <div class="axis-label axis-label-x axis-label-x-right">Not urgent</div>
+
+      <div class="matrix" id="matrix">
+        <section class="quadrant quadrant-do" data-quadrant="do">
+          <div class="quadrant-header">
+            <span class="quadrant-badge">Q1</span>
+            <div>
+              <h2>Do first</h2>
+              <p>Urgent &amp; important</p>
+            </div>
+            <span class="task-count" data-count-for="do">0</span>
+          </div>
+          <ul class="task-list" id="list-do"></ul>
+          <form class="inline-add" data-quadrant="do">
+            <input type="text" placeholder="+ Add to Do first…" aria-label="Add task to Do first" enterkeyhint="done" autocomplete="off">
+          </form>
+        </section>
+
+        <section class="quadrant quadrant-schedule" data-quadrant="schedule">
+          <div class="quadrant-header">
+            <span class="quadrant-badge">Q2</span>
+            <div>
+              <h2>Schedule</h2>
+              <p>Not urgent &amp; important</p>
+            </div>
+            <span class="task-count" data-count-for="schedule">0</span>
+          </div>
+          <ul class="task-list" id="list-schedule"></ul>
+          <form class="inline-add" data-quadrant="schedule">
+            <input type="text" placeholder="+ Add to Schedule…" aria-label="Add task to Schedule" enterkeyhint="done" autocomplete="off">
+          </form>
+        </section>
+
+        <section class="quadrant quadrant-delegate" data-quadrant="delegate">
+          <div class="quadrant-header">
+            <span class="quadrant-badge">Q3</span>
+            <div>
+              <h2>Delegate</h2>
+              <p>Urgent &amp; not important</p>
+            </div>
+            <span class="task-count" data-count-for="delegate">0</span>
+          </div>
+          <ul class="task-list" id="list-delegate"></ul>
+          <form class="inline-add" data-quadrant="delegate">
+            <input type="text" placeholder="+ Add to Delegate…" aria-label="Add task to Delegate" enterkeyhint="done" autocomplete="off">
+          </form>
+        </section>
+
+        <section class="quadrant quadrant-eliminate" data-quadrant="eliminate">
+          <div class="quadrant-header">
+            <span class="quadrant-badge">Q4</span>
+            <div>
+              <h2>Eliminate</h2>
+              <p>Not urgent &amp; not important</p>
+            </div>
+            <span class="task-count" data-count-for="eliminate">0</span>
+          </div>
+          <ul class="task-list" id="list-eliminate"></ul>
+          <form class="inline-add" data-quadrant="eliminate">
+            <input type="text" placeholder="+ Add to Eliminate…" aria-label="Add task to Eliminate" enterkeyhint="done" autocomplete="off">
+          </form>
+        </section>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <span id="stats-active">0 active tasks</span>
+      <span class="footer-divider">·</span>
+      <span id="stats-done">0 completed</span>
+    </footer>
+  </div>
+
+  <dialog class="modal" id="task-modal">
+    <form method="dialog" class="modal-content" id="task-form">
+      <div class="modal-header">
+        <h3>Edit task</h3>
+        <button type="button" class="btn-icon-only" id="close-modal" aria-label="Close">&times;</button>
+      </div>
+
+      <label class="field">
+        <span>Task name</span>
+        <input type="text" id="task-title" required autofocus>
+      </label>
+
+      <label class="field">
+        <span>Notes <em>(optional)</em></span>
+        <textarea id="task-notes" rows="3" placeholder="Add details…"></textarea>
+      </label>
+
+      <fieldset class="quadrant-picker">
+        <legend>Move to quadrant</legend>
+        <div class="quadrant-options">
+          <label class="quadrant-option">
+            <input type="radio" name="quadrant" value="do">
+            <span class="option-card option-do">
+              <strong>Do first</strong>
+              <small>Urgent &amp; important</small>
+            </span>
+          </label>
+          <label class="quadrant-option">
+            <input type="radio" name="quadrant" value="schedule">
+            <span class="option-card option-schedule">
+              <strong>Schedule</strong>
+              <small>Not urgent &amp; important</small>
+            </span>
+          </label>
+          <label class="quadrant-option">
+            <input type="radio" name="quadrant" value="delegate">
+            <span class="option-card option-delegate">
+              <strong>Delegate</strong>
+              <small>Urgent &amp; not important</small>
+            </span>
+          </label>
+          <label class="quadrant-option">
+            <input type="radio" name="quadrant" value="eliminate">
+            <span class="option-card option-eliminate">
+              <strong>Eliminate</strong>
+              <small>Not urgent &amp; not important</small>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="cancel-btn">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
